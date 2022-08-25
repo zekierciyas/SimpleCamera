@@ -92,3 +92,8 @@
 .idea/modules/CameraXProvider.iml
 .idea/modules/library/CameraXProvider.library.iml
 .idea/vcs.xml
+.gradle/7.2/executionHistory/executionHistory.bin
+.gradle/7.2/executionHistory/executionHistory.lock
+.gradle/7.2/fileHashes/resourceHashesCache.bin
+.gradle/buildOutputCleanup/outputFiles.bin
+.idea/assetWizardSettings.xml
