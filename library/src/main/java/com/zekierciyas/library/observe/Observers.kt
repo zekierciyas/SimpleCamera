@@ -1,8 +1,8 @@
-package com.zekierciyas.library
+package com.zekierciyas.library.observe
 
 import android.graphics.Bitmap
 import android.net.Uri
-import androidx.camera.core.ImageProxy
+import com.zekierciyas.library.model.SimpleCameraStateModel
 import java.lang.Exception
 
 interface Observers {
@@ -19,6 +19,6 @@ interface Observers {
 
     interface CameraState {
 
-        fun cameraState(cameraXState: CameraXStateModel)
+        fun cameraState(simpleCameraState: SimpleCameraStateModel)
     }
 }

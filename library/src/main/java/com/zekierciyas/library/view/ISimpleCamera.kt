@@ -1,20 +1,19 @@
-package com.zekierciyas.library
+package com.zekierciyas.library.view
 
-import android.graphics.Camera
-import android.net.Uri
 import androidx.lifecycle.LifecycleOwner
+import com.zekierciyas.library.observe.Observers
 import java.lang.NullPointerException
 
-interface ICameraXProvider {
+interface ISimpleCamera {
 
-    fun observeCameraState(observer: Observers.CameraState?) : CameraXProviderView
+    fun observeCameraState(observer: Observers.CameraState?) : SimpleCameraView
 
     fun startImageAnalysis(lifecycleOwner: LifecycleOwner, observer : Observers.ImageAnalysis)
 
     fun imageCapture(lifecycleOwner: LifecycleOwner,
-                     isReady: (Boolean) -> Unit ): CameraXProviderView
+                     isReady: (Boolean) -> Unit ): SimpleCameraView
 
-    fun takePhoto(observer : Observers.ImageCapture): CameraXProviderView
+    fun takePhoto(observer : Observers.ImageCapture): SimpleCameraView
 
     @Throws(NullPointerException::class)
     fun flipCameraWhileImageAnalysis ()

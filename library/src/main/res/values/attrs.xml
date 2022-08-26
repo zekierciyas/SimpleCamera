@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="CameraXProviderView">
+    <declare-styleable name="SimpleCameraView">
         <attr name="cameraID" format="integer" />
 
     </declare-styleable>

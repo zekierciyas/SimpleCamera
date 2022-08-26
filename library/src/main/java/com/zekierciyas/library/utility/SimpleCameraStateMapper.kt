@@ -1,46 +1,48 @@
-package com.zekierciyas.library
+package com.zekierciyas.library.utility
 
 import androidx.camera.core.CameraState
+import com.zekierciyas.library.model.SimpleCameraStateModel
+import com.zekierciyas.library.observe.SimpleCameraState
 
-object CameraStateMapper {
+object SimpleCameraStateMapper {
 
-    fun asDataModel(cameraState: CameraState): CameraXStateModel? {
+    fun asDataModel(cameraState: CameraState): SimpleCameraStateModel? {
             cameraState.error?.let { error ->
                 return when (error.code) {
                     // Open errors
                     CameraState.ERROR_STREAM_CONFIG -> {
                         // Make sure to setup the use cases properly
-                        CameraXStateModel(null,CameraXState.Error.ERROR_STREAM_CONFIG)
+                        SimpleCameraStateModel(null, SimpleCameraState.Error.ErrorStreamConfig)
                     }
                     // Opening errors
                     CameraState.ERROR_CAMERA_IN_USE -> {
                         // Close the camera or ask user to close another camera app that's using the
                         // camera
-                        CameraXStateModel(null,CameraXState.Error.ERROR_CAMERA_IN_USE)
+                        SimpleCameraStateModel(null, SimpleCameraState.Error.ErrorCameraInUse)
                     }
                     CameraState.ERROR_MAX_CAMERAS_IN_USE -> {
                         // Close another open camera in the app, or ask the user to close another
                         // camera app that's using the camera
-                        CameraXStateModel(null,CameraXState.Error.ERROR_MAX_CAMERAS_IN_USE)
+                        SimpleCameraStateModel(null, SimpleCameraState.Error.ErrorMaxCameraInUse)
 
                     }
                     CameraState.ERROR_OTHER_RECOVERABLE_ERROR -> {
-                        CameraXStateModel(null,CameraXState.Error.ERROR_OTHER_RECOVERABLE_ERROR)
+                        SimpleCameraStateModel(null, SimpleCameraState.Error.ErrorOtherRecoverableError)
 
                     }
                     // Closing errors
                     CameraState.ERROR_CAMERA_DISABLED -> {
                         // Ask the user to enable the device's cameras
-                        CameraXStateModel(null,CameraXState.Error.ERROR_CAMERA_DISABLED)
+                        SimpleCameraStateModel(null, SimpleCameraState.Error.ErrorCameraDisabled)
                     }
                     CameraState.ERROR_CAMERA_FATAL_ERROR -> {
                         // Ask the user to reboot the device to restore camera function
-                        CameraXStateModel(null,CameraXState.Error.ERROR_CAMERA_FATAL_ERROR)
+                        SimpleCameraStateModel(null, SimpleCameraState.Error.ErrorCameraFatalError)
                     }
                     // Closed errors
                     CameraState.ERROR_DO_NOT_DISTURB_MODE_ENABLED -> {
                         // Ask the user to disable the "Do Not Disturb" mode, then reopen the camera
-                        CameraXStateModel(null,CameraXState.Error.ERROR_DO_NOT_DISTURB_MODE_ENABLED)
+                        SimpleCameraStateModel(null, SimpleCameraState.Error.ErrorDoNotDisturbModelEnabled)
                     }
                     else -> {
                         null
@@ -50,25 +52,25 @@ object CameraStateMapper {
 
             return when (cameraState.type) {
             CameraState.Type.PENDING_OPEN -> {
-                CameraXStateModel(CameraXState.Action.PENDING, null)
+                SimpleCameraStateModel(SimpleCameraState.Action.Pending, null)
             }
             CameraState.Type.OPENING -> {
                 // Show the Camera UI
-                CameraXStateModel(CameraXState.Action.OPENING, null)
+                SimpleCameraStateModel(SimpleCameraState.Action.Opening, null)
 
             }
             CameraState.Type.OPEN -> {
                 // Setup Camera resources and begin processing
-                CameraXStateModel(CameraXState.Action.OPEN, null)
+                SimpleCameraStateModel(SimpleCameraState.Action.Open, null)
             }
             CameraState.Type.CLOSING -> {
                 // Close camera UI
-                CameraXStateModel(CameraXState.Action.CLOSING, null)
+                SimpleCameraStateModel(SimpleCameraState.Action.Closing, null)
 
             }
             CameraState.Type.CLOSED -> {
                 // Free camera resources
-                CameraXStateModel(CameraXState.Action.CLOSED, null)
+                SimpleCameraStateModel(SimpleCameraState.Action.Closed, null)
 
             }
             else -> {

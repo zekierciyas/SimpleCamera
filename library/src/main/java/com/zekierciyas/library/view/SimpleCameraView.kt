@@ -1,4 +1,4 @@
-package com.zekierciyas.library
+package com.zekierciyas.library.view
 
 import android.content.Context
 import android.net.Uri
@@ -10,13 +10,18 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import com.zekierciyas.library.*
+import com.zekierciyas.library.feature.SupportedCameraFeatures
+import com.zekierciyas.library.observe.Observers
+import com.zekierciyas.library.utility.FILENAME
+import com.zekierciyas.library.utility.SimpleCameraStateMapper
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 private const val TAG = "CameraXProviderView"
 
-class CameraXProviderView : ICameraXProvider, FrameLayout {
+class SimpleCameraView : ISimpleCamera, FrameLayout {
 
     /** Selecting Camera from CameraX CameraSelector, Default value as back camera */
     private var cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
@@ -66,7 +71,7 @@ class CameraXProviderView : ICameraXProvider, FrameLayout {
     private lateinit var cameraExecutor: ExecutorService
 
     constructor(context: Context) : super(context) {
-        CameraXProviderView(context, null)
+        SimpleCameraView(context, null)
     }
 
     @JvmOverloads
@@ -84,12 +89,12 @@ class CameraXProviderView : ICameraXProvider, FrameLayout {
     private fun init(attrs: AttributeSet?, defStyleAttr: Int) {
         val typedArray = context.theme.obtainStyledAttributes(
             attrs,
-            R.styleable.CameraXProviderView,
+            com.zekierciyas.library.R.styleable.SimpleCameraView,
             defStyleAttr,
             defStyleAttr
         )
         cameraExecutor = Executors.newSingleThreadExecutor()
-        selectedCamera = typedArray.getInt(R.styleable.CameraXProviderView_cameraID, 0)
+        selectedCamera = typedArray.getInt(com.zekierciyas.library.R.styleable.SimpleCameraView_cameraID, 0)
     }
 
     companion object {
@@ -315,7 +320,7 @@ class CameraXProviderView : ICameraXProvider, FrameLayout {
             Log.i(TAG, "observeCameraState: ${cameraState.type.name}")
 
             observerCameraState?.let {
-                CameraStateMapper.asDataModel(cameraState)
+                SimpleCameraStateMapper.asDataModel(cameraState)
                     ?.let {
                             it1 -> it.cameraState(it1)
                     }

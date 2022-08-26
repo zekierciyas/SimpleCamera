@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ImageAnalysisActivity">
 
-    <com.zekierciyas.library.CameraXProviderView
+    <com.zekierciyas.library.view.SimpleCameraView
         android:id="@+id/camera_view"
         app:cameraID="1"
         android:layout_width="match_parent"

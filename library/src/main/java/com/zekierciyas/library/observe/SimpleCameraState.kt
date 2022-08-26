@@ -1,55 +1,52 @@
-package com.zekierciyas.library
+package com.zekierciyas.library.observe
 
 
-sealed class CameraXState {
+sealed class SimpleCameraState {
     sealed class Action {
 
         // Ask the user to close other camera apps
-        object PENDING : Action()
+        object Pending : Action()
 
         // Show the Camera UI
-        object OPENING : Action()
+        object Opening : Action()
 
         // Setup Camera resources and begin processing
-        object OPEN : Action()
+        object Open : Action()
 
         // Close camera UI
-        object CLOSING : Action()
+        object Closing : Action()
 
         // Free camera resources
-        object CLOSED : Action()
+        object Closed : Action()
 
     }
 
     sealed class Error {
         // Make sure to setup the use cases properly
-        object ERROR_STREAM_CONFIG : Error()
+        object ErrorStreamConfig : Error()
 
         // Close the camera or ask user to close another camera app that's using the
         // camera
-        object ERROR_CAMERA_IN_USE : Error()
+        object ErrorCameraInUse : Error()
 
         // Close another open camera in the app, or ask the user to close another
         // camera app that's using the camera
-        object ERROR_MAX_CAMERAS_IN_USE : Error()
+        object ErrorMaxCameraInUse : Error()
 
 
-        object ERROR_OTHER_RECOVERABLE_ERROR : Error()
+        object ErrorOtherRecoverableError : Error()
 
         // Ask the user to enable the device's cameras
-        object ERROR_CAMERA_DISABLED : Error()
+        object ErrorCameraDisabled : Error()
 
         // Ask the user to reboot the device to restore camera function
-        object ERROR_CAMERA_FATAL_ERROR : Error()
+        object ErrorCameraFatalError : Error()
 
         // Ask the user to disable the "Do Not Disturb" mode, then reopen the camera
-        object ERROR_DO_NOT_DISTURB_MODE_ENABLED : Error()
+        object ErrorDoNotDisturbModelEnabled : Error()
     }
 }
 
-data class CameraXStateModel(
-    val action: CameraXState.Action?,
-    val error: CameraXState.Error?
-)
+
 
 

@@ -1,4 +1,4 @@
-package com.zekierciyas.library
+package com.zekierciyas.library.feature
 
 sealed interface SupportedCameraFeatures {
     object ImageCapture: SupportedCameraFeatures

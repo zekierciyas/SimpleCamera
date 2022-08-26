@@ -4,21 +4,23 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.Camera
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.zekierciyas.library.*
+import com.zekierciyas.library.model.SimpleCameraStateModel
+import com.zekierciyas.library.observe.Observers
+import com.zekierciyas.library.observe.SimpleCameraState
+import com.zekierciyas.library.view.SimpleCameraView
 import kotlin.random.Random
 
 private const val TAG = "ImageAnalysisActivity"
 
 class ImageAnalysisActivity : AppCompatActivity() {
 
-    private lateinit var cameraXProviderView: CameraXProviderView
+    private lateinit var cameraXProviderView: SimpleCameraView
     private val permissions = listOf(Manifest.permission.CAMERA)
     private val permissionsRequestCode = Random.nextInt(0, 10000)
     private val buttonFlipCamera: ImageView by lazy { findViewById(R.id.flip_camera_button) }
@@ -61,26 +63,26 @@ class ImageAnalysisActivity : AppCompatActivity() {
     }
 
     private val observerCameraState: Observers.CameraState = object  : Observers.CameraState {
-        override fun cameraState(cameraXState: CameraXStateModel) {
-            Log.d(TAG, "Camera state is ${cameraXState.action.toString()} ")
-            when (cameraXState.action) {
-                is CameraXState.Action.CLOSED -> {
+        override fun cameraState(simpleCameraState: SimpleCameraStateModel) {
+            Log.d(TAG, "Camera state is ${simpleCameraState.action.toString()} ")
+            when (simpleCameraState.action) {
+                is SimpleCameraState.Action.Closed -> {
 
                 }
 
-                is CameraXState.Action.CLOSING -> {
+                is SimpleCameraState.Action.Closing -> {
 
                 }
 
-                is CameraXState.Action.OPEN -> {
+                is SimpleCameraState.Action.Open -> {
 
                 }
 
-                is CameraXState.Action.OPENING -> {
+                is SimpleCameraState.Action.Opening -> {
 
                 }
 
-                is CameraXState.Action.PENDING -> {
+                is SimpleCameraState.Action.Pending -> {
 
                 }
                 else -> {
@@ -88,32 +90,32 @@ class ImageAnalysisActivity : AppCompatActivity() {
                 }
             }
 
-            when (cameraXState.error) {
-                is CameraXState.Error.ERROR_CAMERA_DISABLED -> {
+            when (simpleCameraState.error) {
+                is SimpleCameraState.Error.ErrorCameraDisabled -> {
 
                 }
 
-                is CameraXState.Error.ERROR_CAMERA_FATAL_ERROR -> {
+                is SimpleCameraState.Error.ErrorCameraFatalError -> {
 
                 }
 
-                is CameraXState.Error.ERROR_CAMERA_IN_USE -> {
+                is SimpleCameraState.Error.ErrorCameraInUse -> {
 
                 }
 
-                is CameraXState.Error.ERROR_DO_NOT_DISTURB_MODE_ENABLED -> {
+                is SimpleCameraState.Error.ErrorDoNotDisturbModelEnabled -> {
 
                 }
 
-                is CameraXState.Error.ERROR_MAX_CAMERAS_IN_USE -> {
+                is SimpleCameraState.Error.ErrorMaxCameraInUse -> {
 
                 }
 
-                is CameraXState.Error.ERROR_OTHER_RECOVERABLE_ERROR -> {
+                is SimpleCameraState.Error.ErrorOtherRecoverableError -> {
 
                 }
 
-                is CameraXState.Error.ERROR_STREAM_CONFIG -> {
+                is SimpleCameraState.Error.ErrorStreamConfig -> {
 
                 }
                 else -> {
