@@ -7,6 +7,8 @@ import java.lang.NullPointerException
 
 interface ICameraXProvider {
 
+    fun observeCameraState(observer: Observers.CameraState?) : CameraXProviderView
+
     fun startImageAnalysis(lifecycleOwner: LifecycleOwner, observer : Observers.ImageAnalysis)
 
     fun imageCapture(lifecycleOwner: LifecycleOwner,

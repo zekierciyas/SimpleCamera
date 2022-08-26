@@ -8,10 +8,17 @@ import java.lang.Exception
 interface Observers {
 
     interface ImageAnalysis {
+
         fun result (bitmap: Bitmap?)
     }
 
     interface ImageCapture {
+
         fun result (savedUri: Uri?, exception: Exception? = null)
+    }
+
+    interface CameraState {
+
+        fun cameraState(cameraXState: CameraXStateModel)
     }
 }

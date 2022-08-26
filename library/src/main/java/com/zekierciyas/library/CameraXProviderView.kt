@@ -14,6 +14,8 @@ import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+private const val TAG = "CameraXProviderView"
+
 class CameraXProviderView : ICameraXProvider, FrameLayout {
 
     /** Selecting Camera from CameraX CameraSelector, Default value as back camera */
@@ -33,6 +35,25 @@ class CameraXProviderView : ICameraXProvider, FrameLayout {
 
     /** Fragment/Activity LifeCycle */
     private var lifecycleOwner: LifecycleOwner? = null
+
+    /** Current used Camera object */
+    private var camera: Camera? = null
+
+    /** Observer only for Image Capture feature*/
+    private var observerImageCapture: Observers.ImageCapture? = null
+
+    /** Observer only for ImageAnalysis */
+    private var observerImageAnalysis: Observers.ImageAnalysis? = null
+
+    /** Common observer of Camera info for all supported camera features */
+    private var observerCameraState: Observers.CameraState? = null
+
+    /** Current used camera feature, now we are supporting only one Feature at the same time
+     * If other second feature is enabled previous feature will destroyed
+     * More than one Feature cannot run at the same time for now */
+    private var currentUsedCameraFeature: SupportedCameraFeatures =
+        SupportedCameraFeatures.NotDefined
+
 
     /** CameraProvider of CameraX is determined with public thread safety mode */
     private val cameraProvider by lazy(LazyThreadSafetyMode.PUBLICATION) {
@@ -75,6 +96,13 @@ class CameraXProviderView : ICameraXProvider, FrameLayout {
         private var mPreviewView: PreviewView? = null
     }
 
+    override fun observeCameraState(observer: Observers.CameraState?) = apply {
+        observer?.let {
+            observerCameraState = observer
+        }
+    }
+
+
     /** Starts the ImageAnalysis
      *  @param lifecycleOwner  : Owner of the Fragment/Activity life cycle
      *  @param observer : Observer of ImageAnalysis events */
@@ -82,8 +110,13 @@ class CameraXProviderView : ICameraXProvider, FrameLayout {
         lifecycleOwner: LifecycleOwner,
         observer: Observers.ImageAnalysis
     ) {
+        // Re-passing the image capture observer
+        observerImageAnalysis = observer
         this.lifecycleOwner = lifecycleOwner
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+
+        // Defining ImageAnalysis as current used Camera Feature
+        currentUsedCameraFeature = SupportedCameraFeatures.ImageAnalysis
 
         cameraProviderFuture.addListener({
 
@@ -107,7 +140,7 @@ class CameraXProviderView : ICameraXProvider, FrameLayout {
                 .also {
                     it.setAnalyzer(cameraExecutor) { imageProxy ->
                         // Getting bitmap from ImageProxy, returning Bitmap to observer
-                        observer.result(imageProxy.toBitmap())
+                        observerImageAnalysis!!.result(imageProxy.toBitmap())
                         // Closing the imageProxy after it used
                         imageProxy.close()
                     }
@@ -118,9 +151,12 @@ class CameraXProviderView : ICameraXProvider, FrameLayout {
                 cameraProvider.unbindAll()
 
                 // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
+                camera = cameraProvider.bindToLifecycle(
                     lifecycleOwner, cameraSelector, preview, imageAnalyzer
                 )
+
+                // Observing the camera states of current use case
+                observeCameraState(camera!!.cameraInfo)
 
             } catch (exc: Exception) {
             }
@@ -138,6 +174,10 @@ class CameraXProviderView : ICameraXProvider, FrameLayout {
 
         this.lifecycleOwner = lifecycleOwner
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+
+        // Defining ImageCapture as current used Camera Feature
+        currentUsedCameraFeature = SupportedCameraFeatures.ImageCapture
+
         cameraProviderFuture.addListener({
 
             // Aspect ration due to this view
@@ -173,9 +213,12 @@ class CameraXProviderView : ICameraXProvider, FrameLayout {
                 cameraProvider.unbindAll()
 
                 // Bind use cases to camera
-                cameraProvider.bindToLifecycle(
+                camera = cameraProvider.bindToLifecycle(
                     lifecycleOwner, cameraSelector, preview, imageCapture
                 )
+
+                // Observing the camera states of current use case
+                observeCameraState(camera!!.cameraInfo)
 
                 // Returning callback as Ready, it means its ready to take photo
                 // With other words, camera is opened photo could be taken
@@ -192,6 +235,9 @@ class CameraXProviderView : ICameraXProvider, FrameLayout {
      *  @param observer : Observer of ImageCapture events */
     override fun takePhoto(observer: Observers.ImageCapture) = apply {
 
+        // Setting the observer of ImageCapture events
+        observerImageCapture = observer
+
         // Get a stable reference of the modifiable image capture use case
         imageCapture?.let { imageCapture ->
 
@@ -207,13 +253,13 @@ class CameraXProviderView : ICameraXProvider, FrameLayout {
             imageCapture.takePicture(
                 outputOptions, cameraExecutor, object : ImageCapture.OnImageSavedCallback {
                     override fun onError(exc: ImageCaptureException) {
-                        observer.result(null, exc)
+                        observerImageCapture!!.result(null, exc)
                         Log.e("TAG", "Photo capture failed: ${exc.message}", exc)
                     }
 
                     override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                         val savedUri = output.savedUri ?: Uri.fromFile(photoFile)
-                        observer.result(savedUri)
+                        observerImageCapture!!.result(savedUri)
                         Log.d("TAG", "Photo capture succeeded: $savedUri")
                     }
                 })
@@ -261,6 +307,20 @@ class CameraXProviderView : ICameraXProvider, FrameLayout {
         cameraProvider.bindToLifecycle(
             lifecycleOwner, cameraSelector, preview, imageAnalyzer
         )
+    }
+
+
+    private fun observeCameraState(cameraInfo: CameraInfo) {
+        cameraInfo.cameraState.observe(lifecycleOwner!!) { cameraState ->
+            Log.i(TAG, "observeCameraState: ${cameraState.type.name}")
+
+            observerCameraState?.let {
+                CameraStateMapper.asDataModel(cameraState)
+                    ?.let {
+                            it1 -> it.cameraState(it1)
+                    }
+            }
+        }
     }
 }
 
