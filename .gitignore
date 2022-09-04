@@ -97,3 +97,4 @@
 .gradle/7.2/fileHashes/resourceHashesCache.bin
 .gradle/buildOutputCleanup/outputFiles.bin
 .idea/assetWizardSettings.xml
+*.iml

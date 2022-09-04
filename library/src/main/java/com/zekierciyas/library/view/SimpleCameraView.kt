@@ -19,7 +19,7 @@ import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-private const val TAG = "CameraXProviderView"
+private const val TAG = "SimpleCameraView"
 
 class SimpleCameraView : ISimpleCamera, FrameLayout {
 
