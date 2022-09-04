@@ -184,7 +184,7 @@ simpleCameraView.observeCameraState(observerCameraState)
 #### Common Feature
 ```kotlin
 // Flipping camera 
-cameraXProviderView.flipCameraWhileImageCapture()
+cameraXProviderView.flipCamera()
 ```
 # Used Internal Libraries
 - [CameraX](https://developer.android.com/jetpack/androidx/releases/camera)
