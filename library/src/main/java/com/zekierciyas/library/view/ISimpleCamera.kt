@@ -15,15 +15,10 @@ interface ISimpleCamera {
 
     fun takePhoto(observer : Observers.ImageCapture): SimpleCameraView
 
-    @Throws(NullPointerException::class)
-    fun flipCameraWhileImageAnalysis ()
-
-    @Throws(NullPointerException::class)
-    fun flipCameraWhileImageCapture()
+    fun flipCamera()
 
     /**
      *  TODO: Adding VideoCapture function
-     *        Adding takeBitmap function: Takes bitmap from PreviewView of CameraX
      *        Adding flashTorch, zoom features
      */
 }

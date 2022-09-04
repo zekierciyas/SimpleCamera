@@ -13,11 +13,13 @@ import androidx.lifecycle.LifecycleOwner
 import com.zekierciyas.library.*
 import com.zekierciyas.library.feature.SupportedCameraFeatures
 import com.zekierciyas.library.observe.Observers
+import com.zekierciyas.library.utility.Exceptions
 import com.zekierciyas.library.utility.FILENAME
 import com.zekierciyas.library.utility.SimpleCameraStateMapper
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.jvm.Throws
 
 private const val TAG = "SimpleCameraView"
 
@@ -271,26 +273,45 @@ class SimpleCameraView : ISimpleCamera, FrameLayout {
         }
     }
 
-    /** Flip camera according to current camera for only ImageAnalysis
-     * If selected camera is front, turning the back, Else turning the front */
-    override fun flipCameraWhileImageAnalysis() {
-        // Selecting the Camera
-        cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
-            CameraSelector.DEFAULT_FRONT_CAMERA
-        } else CameraSelector.DEFAULT_BACK_CAMERA
-        // Re-binding the ImageAnalysis
-        reBindImageAnalysis(lifecycleOwner!!)
+    /**
+     *  Flips Camera accordingly used camera feature
+     *  @throws Exceptions.NotDefinedCameraStateException if camera could not been called properly before
+     */
+    @Throws
+    override fun flipCamera() {
+        when(currentUsedCameraFeature) {
+            SupportedCameraFeatures.ImageAnalysis -> {
+                flipCameraForImageAnalysis()
+            }
+
+            SupportedCameraFeatures.ImageCapture -> {
+                flipCameraForImageCapture()
+            }
+
+            SupportedCameraFeatures.NotDefined -> {
+                throw Exceptions.NotDefinedCameraStateException()
+            }
+        }
     }
 
-    /** Flip camera according to current camera for only ImageCapture
-     * If selected camera is front, turning the back, Else turning the front */
-    override fun flipCameraWhileImageCapture() {
+    /** Flips camera only while Image Capturing use case*/
+    private fun flipCameraForImageCapture() {
         // Selecting the Camera
         cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
             CameraSelector.DEFAULT_FRONT_CAMERA
         } else CameraSelector.DEFAULT_BACK_CAMERA
         // Re-binding the ImageAnalysis
         reBindImageCapture(lifecycleOwner!!)
+    }
+
+    /** Flips camera only while Image Analysis use case*/
+    private fun flipCameraForImageAnalysis() {
+        // Selecting the Camera
+        cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
+            CameraSelector.DEFAULT_FRONT_CAMERA
+        } else CameraSelector.DEFAULT_BACK_CAMERA
+        // Re-binding the ImageAnalysis
+        reBindImageAnalysis(lifecycleOwner!!)
     }
 
 
@@ -314,7 +335,7 @@ class SimpleCameraView : ISimpleCamera, FrameLayout {
         )
     }
 
-
+    /** Observing the cameraState from CameraInfo of CameraX*/
     private fun observeCameraState(cameraInfo: CameraInfo) {
         cameraInfo.cameraState.observe(lifecycleOwner!!) { cameraState ->
             Log.i(TAG, "observeCameraState: ${cameraState.type.name}")

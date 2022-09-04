@@ -20,7 +20,7 @@ private const val TAG = "ImageAnalysisActivity"
 
 class ImageAnalysisActivity : AppCompatActivity() {
 
-    private lateinit var cameraXProviderView: SimpleCameraView
+    private lateinit var simpleCameraView: SimpleCameraView
     private val permissions = listOf(Manifest.permission.CAMERA)
     private val permissionsRequestCode = Random.nextInt(0, 10000)
     private val buttonFlipCamera: ImageView by lazy { findViewById(R.id.flip_camera_button) }
@@ -28,10 +28,10 @@ class ImageAnalysisActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_analysis)
-        cameraXProviderView = findViewById(R.id.camera_view)
+       val simpleCameraView: SimpleCameraView = findViewById(R.id.camera_view)
 
         buttonFlipCamera.setOnClickListener {
-            cameraXProviderView.flipCameraWhileImageAnalysis()
+            simpleCameraView.flipCamera()
         }
     }
 
@@ -41,7 +41,7 @@ class ImageAnalysisActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this, permissions.toTypedArray(), permissionsRequestCode)
         } else {
-            cameraXProviderView
+            simpleCameraView
                 .observeCameraState(observerCameraState)
                 .startImageAnalysis(this, observerImageAnalysis)
 

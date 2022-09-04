@@ -38,7 +38,7 @@ class ImageCaptureActivity: AppCompatActivity() {
         }
 
         buttonFlipCamera.setOnClickListener {
-            cameraXProviderView.flipCameraWhileImageCapture()
+            cameraXProviderView.flipCamera()
         }
     }
 
@@ -50,7 +50,9 @@ class ImageCaptureActivity: AppCompatActivity() {
         } else {
             cameraXProviderView
                 .observeCameraState(observerCameraState)
-                .imageCapture(this) {
+                .imageCapture(this) { ready -> {
+
+                }
             }
 
         }
