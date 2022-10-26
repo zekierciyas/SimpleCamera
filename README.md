@@ -25,7 +25,7 @@ allprojects {
 And add a dependency code to your **module**'s `build.gradle` file.
 ```gradle
 dependencies {
-	        implementation 'com.github.zekierciyas:SimpleCamera:Tag'
+	        implementation 'com.github.zekierciyas:SimpleCamera:1.0.0'
 	}
 ```
 
