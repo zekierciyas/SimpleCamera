@@ -176,7 +176,7 @@ simpleCameraView.observeCameraState(observerCameraState)
         // Photo could be taken
         // You can set visibility of capture button here if you had one !
         // Or you can take photo directly when it's ready
-        cameraXProviderView.takePhoto(observerImageCapture)
+        simpleCameraView.takePhoto(observerImageCapture)
     }
     }
 ```
